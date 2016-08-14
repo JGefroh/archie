@@ -1,0 +1,22 @@
+
+@import 'bourbon/bourbon';
+@import 'neat/neat';
+
+@import 'base/breakpoints';
+@import 'base/variables';
+@import 'base/base';
+
+body {
+  @include outer-container();
+  padding: 1rem;
+  font-size: 1.20rem;
+}
+
+.data-section {
+  @include span-columns(6);
+  @include omega();
+}
+
+.term {
+  font-weight: bold;
+}

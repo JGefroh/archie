@@ -1,0 +1,97 @@
+<div>
+  <h2>Caches</h2>
+  <p>
+    Caching is the practice of saving the result of an operation and
+    providing it to following requests that would otherwise cause the operation to execute.
+  </p>
+  <p>
+    Caches are used to speed up data retrieval. By storing the results of frequently requested processing closer
+    to the requester, you can cut down on the number of requests sent throughout your system. It also
+    acts to reduce the total time spent by your time processing these requests, freeing it up to do other things.
+  </p>
+  <p>
+    In the example below, it takes {{::vm.CACHE_EXECUTION_TIME}}ms to retrieve data from the cache and {{::vm.STORE_EXECUTION_TIME}}ms to retrieve data from the database.
+    In real-world examples, caches are typically orders of magnitude faster than the processing they replace.
+  </p>
+  <p>
+    If an object is NOT in the cache, it must be retrieved - this is called a <span class="term">cache miss</span>. Some caches are <span class="term">read-through</span> caches, which means that it will retrieve the data
+    if it is not present in the cache. Other caches are <span class="term">cache-aside</span> caches, which means that it will be up to the calling application
+    to decide what to do if the cache is not present.
+  </p>
+  <p>
+    The cache below is a read-through cache - you'll notice when a cache miss occurs
+    that the time it takes to return the result includes both the cache lookup time as well as the database lookup time. The result is then stored in the cache.
+
+    Ultimately, you want to minimize cache misses.
+  </p>
+  <p>
+    Because caches have limited memory, you must be selective about what to cache. Caches typically follow algorithms to
+    determine what to cache, when to cache, and how long to cache it. The cache in the example below can only store 3 objects - if it attempts to store more, it
+    must remove an object already in the cache. Several cache replacement algorithms exist - the cache below uses the <span class="term">Least Recently Used (LRU)</span> algorithm.
+  </p>
+  <p>
+    Caches are powerful - they can be used in many places throughout the system.
+    Web browsers, for example, will automatically cache pages you visit, making subsequent visits faster. Web application servers can cache results of expensive database queries,
+    allowing it to avoid having to rerun the query.
+  </p>
+  <p>
+    An issue with caches is when the data in the cache becomes outdated or <span class="term">stale</span> compared to where the data originially came from (such as the database). In order to
+    ensure that the data returned is <span class="term">fresh</span> and recent, the data in caches must be updated. This process is called <span class="term">cache invalidation</span>, and there's several methods to accomplish this.
+    One way is to ensure that caches have a limited <span class="term">Time-To-Live (TTL)</span>. TTL ensures that if the object has been in the cache for a certain amount of time, the stale cache is removed or replaced with a fresh copy from the original source,
+    regardless of whether it is cached or not. In the example below, the cached objects below have a TTL of 10 seconds.
+  </p>
+  <hr>
+  <div class="row">
+    <div class="data-section">
+      <h2>Database
+        <button data-ng-click="vm.randomizeIcons()">Change Data</button>
+      </h2>
+      <fieldset class="row">
+        <div data-ng-repeat="object in vm.store" style="display: inline-block; text-align: center; margin: 1rem;">
+          <span class="fa fa-fw fa-3x" data-ng-class="object.icon"></span><br/>
+         {{::object.id}}
+        </div>
+      </fieldset>
+    </div>
+    <div class="data-section">
+      <h2>Cache</h2>
+      <fieldset data-ng-if="vm.cache.length" class="row">
+        <label data-ng-if="!vm.cache.length">The cache is empty.</label>
+        <div data-ng-repeat="object in vm.cache | orderBy: 'id'" style="display: inline-block; text-align: center; margin: 1rem;"
+              data-ng-style="{'opacity': object.lifeLeft}">
+          <span class="fa fa-fw fa-3x" data-ng-class="object.icon"></span><br/>
+         {{::object.id}}
+        </div>
+      </fieldset>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 2rem;">
+    <div class="data-section">
+      <div data-ng-repeat="object in vm.objects" style="text-align: right;">
+        <button data-ng-click="vm.getData(object.id)">Request Object with ID {{object.id}}</button>
+      </div>
+    </div>
+    <div class="data-section">
+      <table>
+        <tr>
+          <th style="width: 7rem;">Requested</th>
+          <th style="width: 3rem;">Value</th>
+          <th style="width: 5rem;">Time</th>
+          <th style="width: 10rem; text-align: right;">Cached?</th>
+        </tr>
+        <tbody>
+          <tr data-ng-repeat="request in vm.requests | orderBy: 'start' :true | limitTo: 10">
+            <td data-ng-bind="request.id" style="text-align: right;"></td>
+            <td style="text-align: center;">
+              <span class="fa fa-fw" data-ng-class="request.result.icon"></span>
+            </td>
+            <td data-ng-if="!request.end"><span class="fa fa-fw fa-spin fa-spinner"></span></td>
+            <td data-ng-if="request.end" data-ng-bind="(request.end - request.start) | date:'s\'.\'sss\'s\''" style="text-align: right;"></td>
+            <td data-ng-if="request.end" data-ng-bind="request.result.fromCache ? 'Cached!' : 'Cache miss.'" style="text-align: right;"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
