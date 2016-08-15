@@ -7,6 +7,7 @@
         'ui.router',
         'archie.cache',
         'archie.home',
+        'archie.horizontal-scaling',
         'archie.vertical-scaling'
 
     ])

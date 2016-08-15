@@ -1,0 +1,75 @@
+<div>
+  <h2>Horizontal Scaling</h2>
+  <p>
+    Horizontal Scaling (scaling out/in) is a technique used to allow a system to handle increasing amount of work by adding more machines to handle requests.
+  </p>
+  <p>
+    It operates under the principle that if one machine can handle 100 requests, two machines can handle 200 requests, three machines can handle 300 requests, and so on.
+    By running the same application on multiple servers and distributing work even amongst the pool of servers, the system as a whole can handle more requests!
+  </p>
+  <p>
+    A downside of horizontal scaling is that not every system can take advantage of it. Most systems must be specifically designed to support
+    horizontal scaling by carefully managing stored data (state) and ensuring that the horizontally scaled portions of the system are stateless. There's an additional maintenace burden
+    as systems get more complex.
+
+    A big upside is that the only limit to performance is the number of servers in the pool - theoretically you can horizontally scale to support even the
+    most extreme usage scenarios.
+  </p>
+  <p>
+    Horizontal scaling has many associated concepts, strategies, and issues.
+  </p>
+
+
+  <h2>Interactive Demo</h2>
+  <p>This demo lets you see the effects of horizontal scaling.</p>
+  <p>The slider on the left controls the number of users trying to access your website per second.
+     The buttons on the right allows you to add or remove servers from the resource pool.
+     Each request from a user takes {{vm.CPU_PER_REQUEST}}mhz of processing power and {{vm.MEMORY_PER_REQUEST}}mb of memory to complete.
+   </p>
+  <p>You can see how increasing the number of systems in the pool (horizontally scaling) let you handle increasing popularity.</p>
+
+  <div class="data-section" style="text-align: center;">
+    <span class="fa fa-fw fa-users fa-4x"></span><br/>
+    Users per second<br>
+    <input data-ng-model="vm.requestsPerSecond" type="range" min="0" max="{{vm.REQUESTS_PER_SECOND_MAX}}" step="10"></input>
+    <li data-ng-if="vm.requestsPerSecond == 0">Nobody is using your website.</li>
+    <li data-ng-if="vm.requestsPerSecond != 0">{{vm.calculateSuccessfulRequestsPercentage().toFixed(2)}}% of users are able to use your website ({{vm.calculateSuccessfulRequestsPerSecond().toFixed(0)}} / {{vm.requestsPerSecond}})!</li>
+    <button data-ng-click="vm.requestsPerSecond = 100;">Simulate release to beta</button>
+    <button data-ng-click="vm.requestsPerSecond = 10000;">Simulate launch of product</button>
+    <button data-ng-click="vm.requestsPerSecond = 100000;">Simulate tremendous success</button>
+  </div>
+
+  <div class="data-section" style="text-align: center;">
+    <span class="fa fa-fw fa-server fa-4x"></span>
+    <div style="display: inline-block;">
+      <span style="width: 7rem; display: inline-block;text-align: right;"><span class="fa fa-fw fa-film"></span> {{vm.memory}}mb per server</span>
+      <span style="width: 7rem; display: inline-block;text-align: right;"><span class="fa fa-fw fa-gears"></span> {{vm.cpu}}mhz per server</span>
+    </div>
+    <div>
+      <button data-ng-click="vm.numSystems = vm.numSystems + 1">Add Server</button>
+      <button data-ng-disabled="vm.numSystems <= 0" data-ng-click="vm.numSystems = vm.numSystems - 1">Remove Server</button>
+    </div>
+    <div>
+      <button data-ng-click="vm.numSystems = 5;">Small Pool</button>
+      <button data-ng-click="vm.numSystems = 20">Production Pool</button>
+      <button data-ng-click="vm.numSystems = 200">Tremendous Success Pool</button>
+    </div>
+    <div style="margin-top: 1rem;">
+      <div data-ng-if="vm.numSystems <= 9">
+        <span class="fa fa-fw fa-server fa-2x" data-ng-repeat="i in vm.getSystems() track by $index"></span><br/>
+      </div>
+      <div data-ng-if="vm.numSystems > 9">
+        <span class="fa fa-fw fa-server fa-2x"></span> x {{vm.numSystems}}
+      </div>
+    </div>
+    <ul>
+      <li data-ng-if="vm.requestsPerSecond == 0">The system is not receiving any requests</li>
+      <li data-ng-if="vm.requestsPerSecond != 0">Receiving {{vm.requestsPerSecond}} requests per second.</lidata-ng-if>
+      <li data-ng-if="vm.requestsPerSecond != 0">{{vm.calculateSuccessfulRequestsPercentage().toFixed(2)}}% of requests are succeeding ({{vm.calculateSuccessfulRequestsPerSecond().toFixed(0)}} / {{vm.requestsPerSecond}})</li>
+      <li data-ng-if="vm.calculateUsedMemory() > vm.calculateMemory()">Memory needs {{(vm.calculateUsedMemory() - vm.calculateMemory()).toFixed(0)}} more mb to process requests (at {{vm.calculateMemory()}}mb).</li>
+      <li data-ng-if="vm.calculateUsedMemory() <= vm.calculateMemory() && vm.calculateMemory() > 0">{{((vm.calculateUsedMemory() / vm.calculateMemory()) * 100).toFixed(2)}}% of memory is being used ({{vm.calculateUsedMemory().toFixed(0)}} / {{vm.calculateMemory()}}mb)</li>
+      <li data-ng-if="vm.calculateUsedCPU() > vm.calculateCPU()">CPU needs {{(vm.calculateUsedCPU() - vm.calculateCPU()).toFixed(0)}} more mhz to process requests (at {{vm.calculateCPU()}}mhz)</li>
+      <li data-ng-if="vm.calculateUsedCPU() <= vm.calculateCPU() && vm.calculateCPU() > 0">{{((vm.calculateUsedCPU() / vm.calculateCPU()) * 100).toFixed(2)}}% of CPU is being used ({{vm.calculateUsedCPU().toFixed(0)}} / {{vm.calculateCPU()}}mhz)</li>
+    </ul>
+  </div>
+</div>
