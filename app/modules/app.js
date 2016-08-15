@@ -8,6 +8,7 @@
         'archie.cache',
         'archie.home',
         'archie.horizontal-scaling',
+        'archie.load-balancer',
         'archie.vertical-scaling'
 
     ])

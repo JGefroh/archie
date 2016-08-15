@@ -1,0 +1,74 @@
+<div>
+  <h2>Load Balancers</h2>
+  <p>
+    Load balancers are used in horizontal scaling solutions to distribute requests
+    across servers.
+  </p>
+  <p>
+    By distributing requests, the system as a whole can process more requests.
+  </p>
+
+  <h2>Interactive Example</h2>
+  <p>
+    The example below lets you see the power of load balancers. You can choose to
+    start or stop sending requests to a specific server, or to update a server to a new version.
+    <br/><br/>
+    You'll notice that you can perform rolling updates by stopping
+    routing to a server, updating the server, and beginning to route traffic to the newly updated server.
+    From a user perspective, they would not see any downtime as the other servers would handle the
+    workload of the server that was updating. This is a powerful technique.
+  </p>
+  <div class="row">
+    <div class="data-section">
+      <span class="fa fa-fw fa-gear"></span> Load Balancer Routing Table
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>IP</th>
+            <th>Version</th>
+            <th style="width: 5rem;"></th>
+            <th style="width: 6rem;"></th>
+            <th>% requests received</th>
+            <th style="width: 10rem;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-ng-repeat="node in vm.nodes">
+            <td>
+              <span class="fa fa-fw fa-server"></span>
+            </td>
+            <td>
+              {{::node.ip}}
+            </td>
+            <td>
+              v0.{{ node.version}}.0
+            </td>
+            <td>
+              <button data-ng-click="vm.upgrade(node)" data-ng-disabled="node.updating">
+                <span data-ng-if="node.updating" class="fa fa-fw fa-spin fa-spinner"></span> Update
+              </button>
+            </td>
+            <td>
+              <button data-ng-if="node.receiving" data-ng-click="vm.stop(node)">Stop Routing</button>
+              <button data-ng-if="!node.receiving" data-ng-click="vm.start(node)">Start Routing</button>
+            </td>
+            <td>
+              {{vm.calculateRequestsReceived(node)}}%
+            </td>
+            <td>
+              <span data-ng-if="node.receiving">
+                <span data-ng-if="node.up">Everything is OK</span>
+                <span data-ng-if="!node.up">Throwing errors</span>
+              </span>
+              <span data-ng-if="!node.receiving">
+                <span data-ng-if="node.up">Server is idle.</span>
+                <span data-ng-if="!node.up">Updating server...</span>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
