@@ -5,13 +5,8 @@
     .config(['$stateProvider', Routes]);
 
   function Routes($stateProvider) {
-    $stateProvider.state('cache', {
-      url: '',
-      templateUrl: 'cache.html',
-      controller: 'CacheController',
-      controllerAs: 'vm'
-    }).state('cache-none', {
-      url: '/',
+    $stateProvider.state('archie.cache', {
+      url: '/cache',
       templateUrl: 'cache.html',
       controller: 'CacheController',
       controllerAs: 'vm'

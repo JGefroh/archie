@@ -5,7 +5,10 @@
     .module('archie',
     [
         'ui.router',
-        'archie.cache'
+        'archie.cache',
+        'archie.home',
+        'archie.vertical-scaling'
+
     ])
     .constant('baseImagePath', '/images/')
     .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {

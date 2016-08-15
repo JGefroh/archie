@@ -1,0 +1,57 @@
+<div>
+  <h2>Vertical Scaling</h2>
+  <p>
+    Vertical Scaling (scaling up/down) is a technique used to allow a system to handle increasing amount of work by giving it more resources.
+  </p>
+  <p>
+    It works under the premise that a system with more processing power and memory can do more
+    work than a system with less processing power and memory. If a server with 500 megabytes of memory and 1.0GHZ processing power can handle 200 requests per second,
+    then by giving it 1000 megabytes of memory and 2.0GHZ of processing power, it can handle 400 requests per second.
+  </p>
+  <p>
+    There are some limitations to this approach. There is a hard limit on how much memory and processing power a server can have, beyond which
+    scaling is simply not possible. Equipment also begins to cost more while offering diminishing returns.
+  </p>
+
+  <h2>Interactive Demo</h2>
+  <p>This demo lets you see the effects of vertical scaling.</p>
+  <p>The slider on the left controls the number of users trying to access your website per second.
+     The sliders on the right controls the amount of memory and CPU available to the server.
+     Each request from a user takes {{vm.CPU_PER_REQUEST}}mhz of processing power and {{vm.MEMORY_PER_REQUEST}}mb of memory to complete.
+   </p>
+  <p>You can see how increasing the number of resources let you handle increasing popularity.</p>
+
+  <div class="data-section" style="text-align: center;">
+    <span class="fa fa-fw fa-users fa-4x"></span><br/>
+    Users per second<br>
+    <input data-ng-model="vm.requestsPerSecond" type="range" min="0" max="{{vm.REQUESTS_PER_SECOND_MAX}}" step="10"></input>
+    <li data-ng-if="vm.requestsPerSecond == 0">Nobody is using your website.</li>
+    <li data-ng-if="vm.requestsPerSecond != 0">{{vm.calculateSuccessfulRequestsPercentage().toFixed(2)}}% of users are able to use your website ({{vm.calculateSuccessfulRequestsPerSecond().toFixed(0)}} / {{vm.requestsPerSecond}})!</li>
+    <button data-ng-click="vm.requestsPerSecond = 100;">Simulate release to beta</button>
+    <button data-ng-click="vm.requestsPerSecond = 10000;">Simulate launch of product</button>
+    <button data-ng-click="vm.requestsPerSecond = 100000;">Simulate tremendous success</button>
+  </div>
+
+  <div class="data-section" style="text-align: center;">
+    <span class="fa fa-fw fa-server fa-4x"></span><br/>
+    <span style="width: 7rem; display: inline-block;text-align: right;"><span class="fa fa-fw fa-film"></span> Memory</span>
+    <input data-ng-model="vm.memory" type="range" min="1024" max="{{vm.MEMORY_MAX}}" step="{{vm.MEMORY_STEP}}"></input><br/>
+
+
+    <span style="width: 7rem; display: inline-block; text-align: right;"><span class="fa fa-fw fa-gears"></span> CPU</span>
+    <input data-ng-model="vm.cpu" type="range" min="100" max="{{vm.CPU_MAX}}" step="1"></input><br/>
+
+    <button data-ng-click="vm.memory = 512; vm.cpu = 512;">Low-cost server</button>
+    <button data-ng-click="vm.memory = 4096; vm.cpu = 1600;">Average Server</button>
+    <button data-ng-click="vm.memory = 16384; vm.cpu = 3200;">Beefy Server</button>
+    <ul>
+      <li data-ng-if="vm.requestsPerSecond == 0">The server is not receiving any requests</li>
+      <li data-ng-if="vm.requestsPerSecond != 0">Receiving {{vm.requestsPerSecond}} requests per second.</lidata-ng-if>
+      <li data-ng-if="vm.requestsPerSecond != 0">{{vm.calculateSuccessfulRequestsPercentage().toFixed(2)}}% of requests are succeeding ({{vm.calculateSuccessfulRequestsPerSecond().toFixed(0)}} / {{vm.requestsPerSecond}})</li>
+      <li data-ng-if="vm.calculateUsedMemory() > vm.memory">Memory needs {{(vm.calculateUsedMemory() - vm.memory).toFixed(0)}} more mb to process requests (at {{vm.memory}}mb).</li>
+      <li data-ng-if="vm.calculateUsedMemory() <= vm.memory">{{((vm.calculateUsedMemory() / vm.memory) * 100).toFixed(2)}}% of memory is being used ({{vm.calculateUsedMemory().toFixed(0)}} / {{vm.memory}}mb)</li>
+      <li data-ng-if="vm.calculateUsedCPU() > vm.cpu">CPU needs {{(vm.calculateUsedCPU() - vm.cpu).toFixed(0)}} more mhz to process requests (at {{vm.cpu}}mhz)</li>
+      <li data-ng-if="vm.calculateUsedCPU() <= vm.cpu">{{((vm.calculateUsedCPU() / vm.cpu) * 100).toFixed(2)}}% of CPU is being used ({{vm.calculateUsedCPU().toFixed(0)}} / {{vm.cpu}}mhz)</li>
+    </ul>
+  </div>
+</div>
